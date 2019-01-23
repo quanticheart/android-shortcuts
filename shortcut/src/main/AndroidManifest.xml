@@ -1,0 +1,19 @@
+<!--
+  ~ /*
+  ~  * Copyright(c) Developed by John Alves at 2019/1/23 - BOOMMM!
+  ~  * .
+  ~  */
+  -->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="qunaticheart.com.shortcut">
+
+    <application>
+        <receiver android:name=".MyReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

@@ -1,0 +1,12 @@
+<!--
+  ~ /*
+  ~  * Copyright(c) Developed by John Alves at 2019/1/23 - BOOMMM!
+  ~  * .
+  ~  */
+  -->
+
+<resources>
+    <string name="add_new_website">Adicionar site</string>
+    <string name="add_new_website_short">Adicionar</string>
+    <string name="disable_shortcut">Desativado</string>
+</resources>
