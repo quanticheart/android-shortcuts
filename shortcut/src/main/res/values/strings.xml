@@ -6,7 +6,5 @@
   -->
 
 <resources>
-    <string name="add_new_website">Adicionar site</string>
-    <string name="add_new_website_short">Adicionar</string>
-    <string name="disable_shortcut">Desativado</string>
+    <string name="disable_shortcut">Disabled</string>
 </resources>

@@ -28,7 +28,7 @@ public class Utils {
     //
     //==============================================================================================
 
-    public static void showToast(final Context context, final String message) {
+    static void showToast(final Context context, final String message) {
 
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override

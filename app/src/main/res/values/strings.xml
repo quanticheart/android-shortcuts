@@ -1,10 +1,13 @@
 <resources>
-    <string name="app_name">Shortcuts</string>
-    <string name="add_new_website">Adicionar site</string>
-    <string name="add_new_website_short">Adicionar</string>
-    <string name="existing_shortcuts">Atalho existente:</string>
-    <string name="remove_shortcut">Excluir</string>
-    <string name="disable_shortcut">Desativar</string>
-    <string name="enable_shortcut">Ativar</string>
+    <string name="app_name">Shortcuts Oreo</string>
+    <string name="add_new_website">Add Website</string>
+    <string name="add_new_website_short">Add</string>
+    <string name="existing_shortcuts">MSG</string>
+    <string name="remove_shortcut">Delete</string>
+    <string name="disable_shortcut">Disable</string>
+    <string name="enable_shortcut">Enable</string>
     <string name="homescreen">Homescreen</string>
+    <string name="not_suported">Not Suported</string>
+    <string name="add_new_shortcuts_msg">Add new Shortcut</string>
+    <string name="icon_website">Icon Website</string>
 </resources>

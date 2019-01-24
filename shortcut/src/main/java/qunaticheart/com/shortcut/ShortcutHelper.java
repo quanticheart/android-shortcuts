@@ -8,25 +8,24 @@
 
 package qunaticheart.com.shortcut;
 
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("all")
+@TargetApi(Build.VERSION_CODES.N_MR1)
 public class ShortcutHelper {
 
     //==============================================================================================
@@ -35,7 +34,6 @@ public class ShortcutHelper {
     //
     //==============================================================================================
 
-    private static final String TAG = "Shortcut Helper";
     private final Context mContext;
     private final ShortcutManager mShortcutManager;
 
@@ -56,10 +54,8 @@ public class ShortcutHelper {
     //
     //==============================================================================================
 
-    private void shortcutManager(Context context, ShortcutInfo shortcut) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+    private void shortcutManager(ShortcutInfo shortcut) {
             mShortcutManager.setDynamicShortcuts(Collections.singletonList(shortcut));
-        }
     }
 
     //==============================================================================================
@@ -68,20 +64,19 @@ public class ShortcutHelper {
     //
     //==============================================================================================
 
-    public void createShotcut(String shortcutID,
+    public void createShotcut(Context context,
+                              String shortcutID,
                               String shortLabel,
                               String longLabel,
                               int icon,
                               Intent intentAction) {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            shortcutManager(mContext, new ShortcutInfo.Builder(mContext, shortcutID)
+            shortcutManager(new ShortcutInfo.Builder(context, shortcutID)
                     .setShortLabel(shortLabel)
                     .setLongLabel(longLabel)
-                    .setIcon(Icon.createWithResource(mContext, icon))
+                    .setIcon(Icon.createWithResource(context, icon))
                     .setIntent(intentAction)
                     .build());
-        }
     }
 
     //==============================================================================================
@@ -178,17 +173,17 @@ public class ShortcutHelper {
     //==============================================================================================
 
     public void removeShortcut(ShortcutInfo shortcut) {
-        mShortcutManager.removeDynamicShortcuts(Arrays.asList(shortcut.getId()));
+        mShortcutManager.removeDynamicShortcuts(Collections.singletonList(shortcut.getId()));
         if (shortcut.isPinned())
             disableShortcut(shortcut);
     }
 
     public void disableShortcut(ShortcutInfo shortcut) {
-        mShortcutManager.disableShortcuts(Arrays.asList(shortcut.getId()));
+        mShortcutManager.disableShortcuts(Collections.singletonList(shortcut.getId()));
     }
 
     public void enableShortcut(ShortcutInfo shortcut) {
-        mShortcutManager.enableShortcuts(Arrays.asList(shortcut.getId()));
+        mShortcutManager.enableShortcuts(Collections.singletonList(shortcut.getId()));
     }
 
     //==============================================================================================
@@ -198,23 +193,35 @@ public class ShortcutHelper {
     //==============================================================================================
 
     public void maybeRestoreAllDynamicShortcuts() {
-        if (mShortcutManager.getDynamicShortcuts().size() == 0) {
-            // NOTE: If this application is always supposed to have dynamic shortcuts, then publish
-            // them here.
-            // Note when an application is "restored" on a new device, all dynamic shortcuts
-            // will *not* be restored but the pinned shortcuts *will*.
-        }
+//        if (mShortcutManager.getDynamicShortcuts().size() == 0) {
+//            // NOTE: If this application is always supposed to have dynamic shortcuts, then publish
+//            // them here.
+//            // Note when an application is "restored" on a new device, all dynamic shortcuts
+//            // will *not* be restored but the pinned shortcuts *will*.
+//        }
     }
 
     public void reportShortcutUsed(String id) {
         mShortcutManager.reportShortcutUsed(id);
     }
 
-    public boolean updateShortcuts(List<ShortcutInfo> updateList) {
+    //==============================================================================================
+    //
+    // ** Update Shortcut
+    //
+    //==============================================================================================
+
+    boolean updateShortcuts(List<ShortcutInfo> updateList) {
         return mShortcutManager.updateShortcuts(updateList);
     }
 
-    public boolean addDynamicShortcuts(List<ShortcutInfo> shortcutInfos) {
+    //==============================================================================================
+    //
+    // ** Add a New Shortcut
+    //
+    //==============================================================================================
+
+    boolean addDynamicShortcuts(List<ShortcutInfo> shortcutInfos) {
 
         for (int i = 0; i < shortcutInfos.size(); i++) {
             String id = shortcutInfos.get(i).getId();
@@ -237,7 +244,7 @@ public class ShortcutHelper {
     //
     //==============================================================================================
 
-    public ShortcutInfo.Builder getShortcutInfo(String id) {
+    ShortcutInfo.Builder getShortcutInfo(String id) {
         return new ShortcutInfo.Builder(mContext, id);
     }
 
@@ -263,7 +270,6 @@ public class ShortcutHelper {
         if (!shortcut.isEnabled()) {
             sb.append(sep);
             sb.append("Disabled");
-            sep = ", ";
         }
         return sb.toString();
     }
@@ -288,7 +294,7 @@ public class ShortcutHelper {
 
     public void createShotcutTest() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            shortcutManager(mContext, new ShortcutInfo.Builder(mContext, shortcutID)
+            shortcutManager(new ShortcutInfo.Builder(mContext, shortcutID)
                     .setShortLabel(shortLabel)
                     .setLongLabel(longLabel)
                     .setDisabledMessage(shortcutDisabledMessage)

@@ -7,11 +7,13 @@
 
 package qunaticheart.com.shortcutsapp;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,6 +28,7 @@ import java.util.List;
 import qunaticheart.com.shortcut.ShortcutHelper;
 import qunaticheart.com.shortcut.WebsiteUtils;
 
+@TargetApi(Build.VERSION_CODES.N_MR1)
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;

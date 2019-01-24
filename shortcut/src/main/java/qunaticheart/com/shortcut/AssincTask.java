@@ -8,15 +8,19 @@
 package qunaticheart.com.shortcut;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.PersistableBundle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
 
+@TargetApi(Build.VERSION_CODES.N_MR1)
 public class AssincTask {
 
     //==============================================================================================
@@ -58,7 +62,7 @@ public class AssincTask {
                     Utils.debugLog("Refreshing shortcut: " + shortcut.getId());
 
                     final ShortcutInfo.Builder b = helper.getShortcutInfo(shortcut.getId());
-                    WebsiteUtils.setSiteInformation(context, b, shortcut.getIntent().getData());
+                    WebsiteUtils.setSiteInformation(context, b, Objects.requireNonNull(Objects.requireNonNull(shortcut.getIntent()).getData()));
                     WebsiteUtils.setExtras(b);
                     updateList.add(b.build());
                 }

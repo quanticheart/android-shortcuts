@@ -7,6 +7,7 @@
 
 package qunaticheart.com.shortcut;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
@@ -14,17 +15,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
+import android.os.Build;
 import android.os.PersistableBundle;
 import android.os.StrictMode;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
 
+@TargetApi(Build.VERSION_CODES.N_MR1)
 public class WebsiteUtils {
 
 
@@ -71,7 +74,7 @@ public class WebsiteUtils {
     //
     //==============================================================================================
 
-    public static void callShortcutManager(Context context, BooleanSupplier r) {
+    static void callShortcutManager(Context context, BooleanSupplier r) {
         try {
             if (!r.getAsBoolean()) {
                 Utils.showToast(context, "Call to ShortcutManager is rate-limited");
@@ -108,8 +111,8 @@ public class WebsiteUtils {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        InputStream is = null;
-        BufferedInputStream bis = null;
+        InputStream is;
+        BufferedInputStream bis;
         try {
             URLConnection conn = new URL(iconUri.toString()).openConnection();
             conn.connect();
@@ -127,10 +130,10 @@ public class WebsiteUtils {
     // ** Get site informations for Shortcut Builder
     //
     //==============================================================================================
-    public static ShortcutInfo.Builder setSiteInformation(Context context, ShortcutInfo.Builder b, Uri uri) {
+    static void setSiteInformation(Context context, ShortcutInfo.Builder b, Uri uri) {
         // TODO Get the actual site <title> and use it.
         // TODO Set the current locale to accept-language to get localized title.
-        b.setShortLabel(uri.getHost());
+        b.setShortLabel(Objects.requireNonNull(uri.getHost()));
         b.setLongLabel(uri.toString());
 
         Bitmap bmp = fetchFavicon(uri);
@@ -140,7 +143,6 @@ public class WebsiteUtils {
             b.setIcon(Icon.createWithResource(context, R.drawable.link));
         }
 
-        return b;
     }
 
     //==============================================================================================
@@ -149,13 +151,12 @@ public class WebsiteUtils {
     //
     //==============================================================================================
 
-    public static final String EXTRA_LAST_REFRESH = "EXTRA_LAST_REFRESH";
+    static final String EXTRA_LAST_REFRESH = "EXTRA_LAST_REFRESH";
 
-    public static ShortcutInfo.Builder setExtras(ShortcutInfo.Builder b) {
+    static void setExtras(ShortcutInfo.Builder b) {
         final PersistableBundle extras = new PersistableBundle();
         extras.putLong(EXTRA_LAST_REFRESH, System.currentTimeMillis());
         b.setExtras(extras);
-        return b;
     }
 
 }

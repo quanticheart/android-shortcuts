@@ -8,23 +8,27 @@
 package qunaticheart.com.shortcutsapp;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import qunaticheart.com.shortcut.AndroidUtil;
 import qunaticheart.com.shortcut.AssincTask;
 import qunaticheart.com.shortcut.ShortcutHelper;
 import qunaticheart.com.shortcut.Utils;
@@ -43,8 +47,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String ID_ADD_WEBSITE = "add_website";
     private static final String ACTION_ADD_WEBSITE = "ADD_WEBSITE";
 
+    private TextView msg;
     private RecyclerAdapter adapter;
     private RecyclerView recyclerView;
+    private Button button;
     private ShortcutHelper mHelper;
 
     //==============================================================================================
@@ -60,19 +66,44 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main);
 
         context = getApplicationContext();
-
-        initShortcutHelper();
         initVars();
-        initActions();
-
-        verifyAction();
-
     }
 
     private void initVars() {
-        recyclerView = findViewById(R.id.list);
+        msg = findViewById(R.id.text);
+        if (!verifyApiLevel()) {
+            msg.setText(getString(R.string.not_suported));
+        } else {
+            button = findViewById(R.id.add);
+            recyclerView = findViewById(R.id.list);
+            button.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+
+            initShortcutHelper();
+            initActions();
+            verifyAction();
+        }
+
     }
 
+    //==============================================================================================
+    //
+    // ** create Shortcut Helpers
+    //
+    //==============================================================================================
+
+    private void initShortcutHelper() {
+        mHelper = new ShortcutHelper(context);
+        mHelper.maybeRestoreAllDynamicShortcuts();
+    }
+
+    //==============================================================================================
+    //
+    // ** Create Actions
+    //
+    //==============================================================================================
+
+    @TargetApi(Build.VERSION_CODES.N_MR1)
     private void initActions() {
         adapter = new RecyclerAdapter(context, mHelper.getShortcuts());
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
@@ -80,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnClickListener(new RecyclerAdapter.OnclickListener() {
             @Override
             public void removeShortcut(ShortcutInfo shortcut) {
-                Toast.makeText(context, shortcut.getId(), Toast.LENGTH_SHORT).show();
                 mHelper.removeShortcut(shortcut);
                 refreshList();
             }
@@ -101,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.add).setOnClickListener(new OnClickListener() {
+        button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 addWebSite();
@@ -109,17 +139,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         new AssincTask().refreshShortcuts(/*force=*/ context, false);
-    }
-
-    //==============================================================================================
-    //
-    // ** create Shortcut Helpers
-    //
-    //==============================================================================================
-
-    private void initShortcutHelper() {
-        mHelper = new ShortcutHelper(context);
-        mHelper.maybeRestoreAllDynamicShortcuts();
     }
 
     //==============================================================================================
@@ -143,7 +162,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        refreshList();
+        if (verifyApiLevel())
+            refreshList();
     }
 
     //==============================================================================================
@@ -159,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
         final EditText editUri = new EditText(this);
         editUri.setHint("http://www.android.com/");
-        editUri.setInputType(EditorInfo.TYPE_TEXT_VARIATION_URI);
+        editUri.setInputType(EditorInfo.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
 
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Add new website")
@@ -200,7 +220,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshList() {
+        if (mHelper.getShortcuts().size() == 0) {
+            msg.setText(getString(R.string.add_new_shortcuts_msg));
+            msg.setVisibility(View.VISIBLE);
+        } else {
+            msg.setVisibility(View.GONE);
+        }
         adapter.refreshList(mHelper.getShortcuts());
+    }
+
+    //==============================================================================================
+    //
+    // ** Verify Api Level
+    //
+    //==============================================================================================
+
+    private boolean verifyApiLevel() {
+        return AndroidUtil.verifyVesionMin(AndroidUtil.O);
     }
 
 }
