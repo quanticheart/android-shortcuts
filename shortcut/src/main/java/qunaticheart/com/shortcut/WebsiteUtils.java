@@ -42,7 +42,7 @@ public class WebsiteUtils {
                                 .addDynamicShortcuts(
                                         Collections.singletonList(
                                                 createShortcutForUrl(
-                                                        context, normalizeUrl(urlAsString
+                                                        context, normalizeUrl(urlAsString.toLowerCase()
                                                         ))));
                     }
                 }
@@ -78,7 +78,7 @@ public class WebsiteUtils {
             }
         } catch (Exception e) {
             Utils.debugLog("Caught Exception: " + e);
-            Utils.showToast(context, "Error while calling ShortcutManager: " + e.toString());
+//            Utils.showToast(context, "Error while calling ShortcutManager: " + e.toString());
         }
     }
 

@@ -4,7 +4,7 @@
     <string name="add_new_website_short">Adicionar</string>
     <string name="existing_shortcuts">Atalho existente:</string>
     <string name="remove_shortcut">Excluir</string>
-    <string name="disable_shortcut">Desativado</string>
+    <string name="disable_shortcut">Desativar</string>
     <string name="enable_shortcut">Ativar</string>
     <string name="homescreen">Homescreen</string>
 </resources>

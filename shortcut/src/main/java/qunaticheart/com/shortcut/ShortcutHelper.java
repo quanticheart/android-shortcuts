@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
@@ -104,7 +105,7 @@ public class ShortcutHelper {
                 .build();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            Intent  pinnedShortcutCallbackIntent = mShortcutManager.createShortcutResultIntent(shortcut2);
+            Intent pinnedShortcutCallbackIntent = mShortcutManager.createShortcutResultIntent(shortcut2);
             PendingIntent successCallback = PendingIntent.getBroadcast(mContext, 0, pinnedShortcutCallbackIntent, 0);
             mShortcutManager.requestPinShortcut(shortcut2, successCallback.getIntentSender());
         }
@@ -178,6 +179,8 @@ public class ShortcutHelper {
 
     public void removeShortcut(ShortcutInfo shortcut) {
         mShortcutManager.removeDynamicShortcuts(Arrays.asList(shortcut.getId()));
+        if (shortcut.isPinned())
+            disableShortcut(shortcut);
     }
 
     public void disableShortcut(ShortcutInfo shortcut) {
@@ -212,6 +215,19 @@ public class ShortcutHelper {
     }
 
     public boolean addDynamicShortcuts(List<ShortcutInfo> shortcutInfos) {
+
+        for (int i = 0; i < shortcutInfos.size(); i++) {
+            String id = shortcutInfos.get(i).getId();
+            List<ShortcutInfo> verify = getShortcuts();
+
+            for (int j = 0; j < verify.size(); j++) {
+                if (verify.get(j).getId().equals(id)){
+                    Utils.showToast(mContext, "Shortcut Exists");
+                    shortcutInfos.remove(i);
+                }
+            }
+
+        }
         return mShortcutManager.addDynamicShortcuts(shortcutInfos);
     }
 

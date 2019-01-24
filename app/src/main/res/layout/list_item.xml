@@ -60,6 +60,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/homescreen"
+                    android:textSize="12sp"
                     android:visibility="visible" />
 
                 <Button
@@ -70,6 +71,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/remove_shortcut"
+                    android:textSize="12sp"
                     android:visibility="visible" />
 
                 <Button
@@ -80,6 +82,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/disable_shortcut"
+                    android:textSize="12sp"
                     android:visibility="visible" />
 
             </LinearLayout>

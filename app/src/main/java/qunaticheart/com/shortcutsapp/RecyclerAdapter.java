@@ -10,6 +10,7 @@ package qunaticheart.com.shortcutsapp;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -27,10 +28,12 @@ import qunaticheart.com.shortcut.WebsiteUtils;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private Context context;
     private List<ShortcutInfo> mList;
     private final LayoutInflater mInflater;
 
     RecyclerAdapter(Context context, List<ShortcutInfo> mList) {
+        this.context = context;
         this.mList = mList;
         mInflater = context.getSystemService(LayoutInflater.class);
     }
@@ -46,7 +49,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         if (viewHolder instanceof ShortcutHolder) {
             ShortcutHolder holder = (ShortcutHolder) viewHolder;
-            holder.bindView(mList.get(i));
+            holder.bindView(context, mList.get(i));
         }
     }
 
@@ -69,13 +72,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             view = itemView;
         }
 
-        private void bindView(final ShortcutInfo shortcut) {
+        private void bindView(Context context, final ShortcutInfo shortcut) {
             view.setTag(shortcut);
 
             ImageView img = view.findViewById(R.id.icon);
 
             final Bitmap bitmap = WebsiteUtils.fetchFavicon(Uri.parse(WebsiteUtils.normalizeUrl(shortcut.getId())));
-            img.setImageBitmap(bitmap);
+
+            final Bitmap recipe;
+            if (bitmap == null)
+                recipe = BitmapFactory.decodeResource(context.getResources(), qunaticheart.com.shortcut.R.drawable.link);
+            else
+                recipe = bitmap;
+
+            img.setImageBitmap(recipe);
 
             final TextView line1 = view.findViewById(R.id.line1);
             final TextView line2 = view.findViewById(R.id.line2);
@@ -88,14 +98,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             final Button disable = view.findViewById(R.id.disable);
 
             disable.setText(shortcut.isEnabled() ? R.string.disable_shortcut : R.string.enable_shortcut);
-
+            home.setVisibility(shortcut.isEnabled() ? View.VISIBLE : View.GONE);
             home.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listener != null)
-                        listener.addOnHomeScreen(shortcut, bitmap);
+                        listener.addOnHomeScreen(shortcut, recipe);
                 }
             });
+
+            remove.setVisibility(shortcut.isDynamic() ? View.VISIBLE : View.GONE);
             remove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
