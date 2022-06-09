@@ -1,0 +1,2 @@
+# ShortcutsApp
+simple shortcut app
